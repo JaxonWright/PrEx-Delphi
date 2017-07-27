@@ -13,6 +13,7 @@ object Form1: TForm1
   OldCreateOrder = False
   StyleElements = [seFont, seClient]
   OnCreate = FormCreate
+  OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -23,7 +24,6 @@ object Form1: TForm1
     Width = 388
     Height = 543
     Align = alClient
-    Caption = 'grdpnl1'
     ColumnCollection = <
       item
         SizeStyle = ssAbsolute
@@ -113,11 +113,14 @@ object Form1: TForm1
       ColCount = 4
       Ctl3D = True
       DefaultColWidth = 100
+      DragKind = dkDock
       FixedCols = 0
       RowCount = 2
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowClick]
       ParentCtl3D = False
       TabOrder = 1
       OnDrawCell = processTable1DrawCell
+      OnFixedCellClick = processTable1FixedCellClick
       OnSelectCell = processTable1SelectCell
       ColWidths = (
         38
