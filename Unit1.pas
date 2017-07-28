@@ -48,6 +48,10 @@ begin
      else SortColRow(IsColumn, Index, FixedRows, RowCount - 1, IsNumbers)
 end;
 
+{**
+ * When the user clicks a column heading, this sorts the TStringGrid by that column
+ * value.
+ *}
 procedure TStringGridHelper.SortColRow(IsColumn: Boolean; Index: Integer; FromIndex: Integer; ToIndex: Integer; IsNumbers: Boolean);
     var i, p, x, c : Integer;
     s1, s2 : String;
@@ -108,6 +112,9 @@ begin
     end;
 end;
 
+{**
+ *   Populates the TStringGrid with the processes running on the computer
+ *}
 procedure populateList;
 var handler: THandle;
     data   : TProcessEntry32;
@@ -143,6 +150,10 @@ begin
          Form1.processTable1.RowCount :=  Form1.processTable1.RowCount - 1;
    end;
 end;
+
+{**
+ *   Used to set the width of the last column to reach the end of the window
+ *}
 procedure SetColumnFullWidth(Grid: TStringGrid; ACol: Integer);
 var
   I: Integer;
@@ -161,7 +172,7 @@ end;
 procedure TForm1.btnForceCloseClick(Sender: TObject);
 begin
      TerminateProcess(OpenProcess(PROCESS_ALL_ACCESS,False,StrToInt(processTable1.Cells[0,processTable1.Row])),0);
-     btnRefreshClick(Sender);
+     btnRefreshClick(Sender);   {refresh the list to remove the closed process}
      btnForceClose.Enabled := false;
      selected.Caption := '';
 end;
@@ -210,7 +221,7 @@ begin
      processTable1.Cells[2,0] := '#Th';
      processTable1.Cells[3,0] := 'Name';
      populateList;
-     SetColumnFullWidth(processTable1, 3);
+     SetColumnFullWidth(processTable1, 3); {last column width goes to end of window}
      processTable1.SortColRow(False, 3, False);
 end;
 
@@ -219,8 +230,10 @@ procedure TForm1.processTable1DrawCell(Sender: TObject; ACol, ARow: Integer;
 var
    iWidth : Integer;
 begin
+     {Don't autosize last column, because that is resized according to window width}
      if ACol = 3 then Exit;
-     
+
+     {adjust width according to larges text width in column}
      iWidth := processTable1.Canvas.TextWidth(processTable1.Cells[ACol, ARow]);
      if iWidth > aColWidth[ACol] then
         aColWidth[ACol] := iWidth;
@@ -228,6 +241,9 @@ begin
      processTable1.ColWidths[ACol] := aColWidth[ACol];
 end;
 
+{**
+ *   Clicking the column headers to sort the table
+ *}
 procedure TForm1.processTable1FixedCellClick(Sender: TObject; ACol,
   ARow: Integer);
 begin
@@ -246,7 +262,8 @@ procedure TForm1.processTable1SelectCell(Sender: TObject; ACol, ARow: Integer;
   var CanSelect: Boolean);
 begin
      btnForceClose.Enabled := true;
-     selected.Caption := 'Selected PID #' + processTable1.Cells[0, ARow] + #13 + processTable1.Cells[3, ARow];
+     selected.Caption := 'Selected PID #' + processTable1.Cells[0, ARow]
+                                    + #13 + processTable1.Cells[3, ARow];
 
 end;
 
